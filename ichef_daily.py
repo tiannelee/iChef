@@ -4,7 +4,7 @@ import os
 # create empty dataframe to store the combined data
 combined_data = pd.DataFrame()
 # speficy the directory the excel files are located
-folder_path =  os.path.abspath("data")
+folder_path =  "Data"
 file_paths = [os.path.join(folder_path, file_name) for file_name in os.listdir(folder_path)]
 excel_files = [file for file in file_paths if file.endswith('.xlsx')]
 sorted_files = sorted(excel_files, key=lambda x: os.path.getmtime(x))
@@ -28,9 +28,31 @@ result_wide = result.pivot(index='號碼', columns='時段', values='銷售量')
 result_wide['總計'] = result_wide.sum(axis=1)
 
 result_wide['編號'] = result_wide.index.astype(int)
-all_numbers = pd.DataFrame({'編號': range(1, 51)})
+all_numbers = pd.DataFrame({'編號': range(1, 53)})
 result_wide = pd.merge(all_numbers, result_wide, on='編號', how='left')
 result_wide.fillna(0, inplace=True)
+
+# 兩個半套 ==============================================================
+# Identify the index for '油條'
+bread_index = result_wide[result_wide['編號'] == 34].index[0]
+
+# Calculate the sum of corresponding values for '燒餅' and '兩個半套'
+bread_sum = result_wide[result_wide['編號'].isin([34, 52])].sum()
+
+# Update the values for '油條' row
+result_wide.iloc[bread_index, 1:] = bread_sum.iloc[1:].values
+
+# Identify the index for '燒餅'
+roll_index = result_wide[result_wide['編號'] == 28].index[0]
+
+# Calculate the sum of corresponding values for '燒餅' and '兩個半套'
+roll_sum = result_wide[result_wide['編號'].isin([28, 52])].sum() + result_wide[result_wide['編號'].isin([52])].sum()
+
+# Update the values for '燒餅' row
+result_wide.iloc[roll_index, 1:] = roll_sum.iloc[1:].values
+
+result_wide = result_wide.iloc[:-2]
+# 兩個半套 ==============================================================
 
 result_wide['名稱'] = ['冰炭香豆漿', '冰花生米漿', '冰炭香清漿', '冰豆米漿', '冰蜂蜜紅茶', '冰蜂蜜豆漿紅茶',
 '熱炭香豆漿', '熱花生米漿', '熱炭香清漿', '熱豆米漿', '熱豆漿加蛋', '鹹豆漿', '鹹豆漿加蛋', '酸辣湯', '鹹飯糰', '甜飯糰',

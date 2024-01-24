@@ -144,7 +144,7 @@ coldcake = pd.DataFrame({'名稱': ['千層糕'], 'Count': [result_wide.loc[resu
 
 # 蘿蔔糕 count
 turnipcake_count = result_wide.loc[result_wide['編號'].isin(range(39, 41)), '總計'].sum()
-turnip = pd.DataFrame({'名稱': ['蘿蔔糕'], 'Count': [ovenroll_count]})
+turnip = pd.DataFrame({'名稱': ['蘿蔔糕'], 'Count': [turnipcake_count]})
 
 # 牛肉餡餅
 beefcake = pd.DataFrame({'名稱': ['牛肉餡餅'], 'Count': [result_wide.loc[result_wide['編號'] == 41, '總計'].values[0]]})
